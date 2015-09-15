@@ -14,15 +14,19 @@ import org.json.simple.JSONObject;
  * class ini berguna untuk menangani objek graph database
  */
 public class GraphDatabase {
-    private List<Graph> listGraph;
-    private List<Integer> listIdGraph;
-    private List<Integer> listIdNode;
-    private List<Integer> listIdEdge;
+    // definisikan segala konstanta yang dibutuhkan oleh class graph database disini
     private final String LIST_NODE_FILE_NAME = "data\\list_node";
     private final String LIST_EDGE_FILE_NAME = "data\\list_edge";        
     private final String LIST_GRAPH_ID_FILE_NAME = "data\\list_graph_id";
     private final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
     private final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
+    private final String LIST_ID_KEY = "listId";
+
+    private List<Graph> listGraph;
+    private List<Integer> listIdGraph;
+    private List<Integer> listIdNode;
+    private List<Integer> listIdEdge;
+
     
     /**
      * Default Constructor
