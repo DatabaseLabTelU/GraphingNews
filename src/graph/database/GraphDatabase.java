@@ -4,10 +4,21 @@
  */
 package graph.database;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * class ini berguna untuk menangani objek graph database
@@ -40,7 +51,7 @@ public class GraphDatabase {
      * 
      * generate ada inisiasi id node yang akan di masukkan dilakukan dalam method ini
      */
-    public void addNode(Node node){
+    public void addNode(Node node) throws FileNotFoundException{
         // buat object graph
         Graph graph = new Graph();
         
@@ -129,7 +140,61 @@ public class GraphDatabase {
      * selalu simpan nama file pada file yang menyimpan list file yang ada dengan kondisi terurut secara ascending
      */
     public void commit(){
-        
+        JSONObject objGraph = new JSONObject();
+        JSONArray ListNode = new JSONArray();
+        JSONObject objListNode = new JSONObject();
+
+        JSONObject objNode = new JSONObject();
+        JSONArray ListEdge = new JSONArray();
+        JSONObject objListEdge = new JSONObject();
+
+        JSONObject objEdge = new JSONObject();
+
+        for (int i = 0; i < listGraph.size(); i++) {
+            objGraph.put("id", listGraph.get(i).getId());
+            objListNode.put("node", listGraph.get(i).getListNode().get(i).getLabel());
+            ListNode.add(objListNode);
+
+            for (int j = 0; j < listGraph.get(i).getListNode().size(); j++) {
+                objNode.put("id", listGraph.get(i).getListNode().get(i).getId());
+                objNode.put("label", listGraph.get(i).getListNode().get(i).getLabel());
+                //========================kurang properties=====================
+                objListEdge.put("edge", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getLabel());
+                ListEdge.add(objListEdge);
+
+                for (int k = 0; k < listGraph.get(i).getListNode().get(i).getListEdge().size(); k++) {
+                    objEdge.put("id", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
+                    objEdge.put("label", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
+                    //========================kurang properties=====================
+                    objEdge.put("neighbour", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getNeighbour());
+                }
+            }
+
+        }
+        objGraph.put("List Node", ListNode);
+        objNode.put("List Edge", ListEdge);
+
+        try {
+
+            FileWriter graph = new FileWriter("graph.json");
+            FileWriter node = new FileWriter("node.json");
+            FileWriter edge = new FileWriter("edge.json");
+
+            graph.write(objGraph.toJSONString());
+            graph.flush();
+            graph.close();
+
+            node.write(objNode.toJSONString());
+            node.flush();
+            node.close();
+
+            edge.write(objEdge.toJSONString());
+            edge.flush();
+            edge.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -207,8 +272,82 @@ public class GraphDatabase {
      * 
      * pencarian id yang tersedia dilakukan melalui pengecekan pada memori terlebih dahulu lalu pada hard disk
      */
-    private long generateId(Class<?> type){
-        long id = -1;
+    private long generateId(Class<?> type) throws FileNotFoundException{
+        long id = 0;
+        ArrayList<Long> jsonEdgeId = new ArrayList<>();
+        JSONObject obj;
+        JSONArray listId;
+        Iterator<?> iterator;
+        if (type == Edge.class) {
+            listIdEdge = new ArrayList<>();
+            if (listIdEdge.isEmpty()) {
+                FileReader reader = new FileReader(LIST_EDGE_ID_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                    try {
+                        obj = (JSONObject) parser.parse(reader);
+                        listId = (JSONArray) obj.get("listId");
+                        iterator = listId.iterator();
+                        while (iterator.hasNext()) {
+                            jsonEdgeId.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                        }
+                        id = Collections.max(jsonEdgeId) + 1;
+                    } catch (Exception ex) {
+                        Logger.getLogger(GraphDatabase.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                
+
+            } else {
+                id = Collections.max(listIdEdge) + 1;
+            }
+        } else if (type == Node.class) {
+            listIdNode = new ArrayList<>();
+            if (listIdNode.isEmpty()) {
+                FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                try {
+                    obj = (JSONObject) parser.parse(reader);
+
+                    listId = (JSONArray) obj.get("listId");
+                    iterator = listId.iterator();
+                    while (iterator.hasNext()) {
+                        jsonEdgeId.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                    }
+                    id = Collections.max(jsonEdgeId) + 1;
+                } catch (Exception ex) {
+                    Logger.getLogger(GraphDatabase.class.getName()).log(Level.SEVERE, null, ex);
+
+                }
+
+            } else {
+                id = Collections.max(listIdEdge) + 1;
+            }
+        } else if (type == Graph.class) {
+            listIdGraph = new ArrayList<>();
+            if (listIdGraph.isEmpty()) {
+                FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                try {
+                    obj = (JSONObject) parser.parse(reader);
+                    listId = (JSONArray) obj.get("listId");
+                    iterator = listId.iterator();
+                    while (iterator.hasNext()) {
+                        jsonEdgeId.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                    }
+                    id = Collections.max(jsonEdgeId) + 1;
+                } catch (Exception ex) {
+                    Logger.getLogger(GraphDatabase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            } else {
+                id = Collections.max(listIdEdge) + 1;
+            }
+        }
         return id;
     }
     
