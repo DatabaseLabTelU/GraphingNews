@@ -7,6 +7,7 @@ package graph.database;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.json.simple.JSONObject;
 
 /**
@@ -207,7 +208,7 @@ public class GraphDatabase {
      * 
      * pencarian id yang tersedia dilakukan melalui pengecekan pada memori terlebih dahulu lalu pada hard disk
      */
-    private long generateId(Class<?> type){
+    private long generateId(Class<?> type) throws NoSuchElementException{
         long id = -1;
         return id;
     }
