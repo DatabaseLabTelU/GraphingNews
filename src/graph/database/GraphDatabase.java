@@ -4,11 +4,20 @@
  */
 package graph.database;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * class ini berguna untuk menangani objek graph database
@@ -23,9 +32,9 @@ public class GraphDatabase {
     private final String LIST_ID_KEY = "listId";
 
     private List<Graph> listGraph;
-    private List<Integer> listIdGraph;
-    private List<Integer> listIdNode;
-    private List<Integer> listIdEdge;
+    private List<Long> listIdGraph;
+    private List<Long> listIdNode;
+    private List<Long> listIdEdge;
 
     
     /**
@@ -45,7 +54,7 @@ public class GraphDatabase {
      * 
      * generate ada inisiasi id node yang akan di masukkan dilakukan dalam method ini
      */
-    public void addNode(Node node){
+    public void addNode(Node node) throws IOException, FileNotFoundException, NoSuchElementException, ParseException{
         // buat object graph
         Graph graph = new Graph();
         
@@ -212,10 +221,113 @@ public class GraphDatabase {
      * 
      * pencarian id yang tersedia dilakukan melalui pengecekan pada memori terlebih dahulu lalu pada hard disk
      */
-    private long generateId(Class<?> type) throws NoSuchElementException{
+    private long generateId(Class<?> type) throws FileNotFoundException, IOException, NoSuchElementException, ParseException {
         long id = -1;
+        long count = 0;
+        JSONObject obj;
+        JSONArray listId;
+        Iterator<?> iterator;
+        String pathFile;
+        if (type == Edge.class) {
+            if (listIdEdge == null) {
+                // sinkronisasi start
+                listIdEdge = new ArrayList<Long>();
+                FileReader reader = new FileReader(LIST_EDGE_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                obj = (JSONObject) parser.parse(reader);
+                listId = (JSONArray) obj.get(LIST_ID_KEY);
+                iterator = listId.iterator();
+                while (iterator.hasNext()) {
+                    listIdEdge.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                }
+                // sinkronisasi end
+                
+                for (long i : listIdEdge) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            } else {
+                for (long i : listIdEdge) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            }
+        } else if (type == Node.class) {
+            if (listIdNode == null) {
+                // sinkronisasi start
+                listIdNode = new ArrayList<Long>();
+                FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                obj = (JSONObject) parser.parse(reader);
+                listId = (JSONArray) obj.get(LIST_ID_KEY);
+                iterator = listId.iterator();
+                while (iterator.hasNext()) {
+                    listIdNode.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                }
+                // sinkronisasi end
+                for (long i : listIdNode) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            } else {
+                for (long i : listIdNode) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            }
+        } else if (type == Graph.class) {
+            if (listIdGraph == null) {
+                // sinkronisasi start
+                listIdGraph = new ArrayList<Long>();
+                FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
+                JSONParser parser = new JSONParser();
+                BufferedReader br = new BufferedReader(reader);
+
+                obj = (JSONObject) parser.parse(reader);
+                listId = (JSONArray) obj.get(LIST_ID_KEY);
+                iterator = listId.iterator();
+                while (iterator.hasNext()) {
+                    listIdGraph.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                }
+                // sinkronisasi end
+                for (long i : listIdGraph) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            } else {
+                for (long i : listIdGraph) {
+                    if (i != count) {
+                        break;
+                    }
+                    count++;
+                }
+                id = count;
+            }
+        } else {
+            throw new NoSuchElementException("salah pemilihan type yang akan di generate id-nya");
+        }
         return id;
     }
+
     
     /**
      * method ini digunakan untuk mencari graph yang terbentuk dalam sebuah graph.
