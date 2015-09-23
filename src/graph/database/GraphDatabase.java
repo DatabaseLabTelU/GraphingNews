@@ -224,14 +224,15 @@ public class GraphDatabase {
     private long generateId(Class<?> type) throws FileNotFoundException, IOException, NoSuchElementException, ParseException {
         long id = -1;
         long count = 0;
-        boolean notSequence = false;
         JSONObject obj;
         JSONArray listId;
         Iterator<?> iterator;
+        String pathFile;
         if (type == Edge.class) {
-            listIdEdge = new ArrayList<Long>();
-            if (listIdEdge.isEmpty()) {
-                FileReader reader = new FileReader(LIST_EDGE_ID_FILE_NAME);
+            if (listIdEdge == null) {
+                // sinkronisasi start
+                listIdEdge = new ArrayList<Long>();
+                FileReader reader = new FileReader(LIST_EDGE_FILE_NAME);
                 JSONParser parser = new JSONParser();
                 BufferedReader br = new BufferedReader(reader);
 
@@ -241,35 +242,28 @@ public class GraphDatabase {
                 while (iterator.hasNext()) {
                     listIdEdge.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
                 }
+                // sinkronisasi end
+                
                 for (long i : listIdEdge) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdEdge) + 1;
-                }
+                id = count;
             } else {
                 for (long i : listIdEdge) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdEdge) + 1;
-                }
+                id = count;
             }
         } else if (type == Node.class) {
-            listIdNode = new ArrayList<Long>();
-            if (listIdNode.isEmpty()) {
+            if (listIdNode == null) {
+                // sinkronisasi start
+                listIdNode = new ArrayList<Long>();
                 FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
                 JSONParser parser = new JSONParser();
                 BufferedReader br = new BufferedReader(reader);
@@ -280,35 +274,27 @@ public class GraphDatabase {
                 while (iterator.hasNext()) {
                     listIdNode.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
                 }
+                // sinkronisasi end
                 for (long i : listIdNode) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdNode) + 1;
-                }
+                id = count;
             } else {
                 for (long i : listIdNode) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdNode) + 1;
-                }
+                id = count;
             }
         } else if (type == Graph.class) {
-            listIdGraph = new ArrayList<Long>();
-            if (listIdGraph.isEmpty()) {
+            if (listIdGraph == null) {
+                // sinkronisasi start
+                listIdGraph = new ArrayList<Long>();
                 FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
                 JSONParser parser = new JSONParser();
                 BufferedReader br = new BufferedReader(reader);
@@ -319,32 +305,25 @@ public class GraphDatabase {
                 while (iterator.hasNext()) {
                     listIdGraph.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
                 }
+                // sinkronisasi end
                 for (long i : listIdGraph) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdGraph) + 1;
-                }
+                id = count;
             } else {
                 for (long i : listIdGraph) {
                     if (i != count) {
-                        notSequence = true;
                         break;
                     }
                     count++;
                 }
-                if (notSequence) {
-                    id = count;
-                } else {
-                    id = Collections.max(listIdGraph) + 1;
-                }
+                id = count;
             }
+        } else {
+            throw new NoSuchElementException("salah pemilihan type yang akan di generate id-nya");
         }
         return id;
     }
