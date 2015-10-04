@@ -7,6 +7,7 @@ package graph.database;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,8 +143,70 @@ public class GraphDatabase {
      * jika sudah, berarti hapus semua file yang lama dahulu sebelum tulis file yang baru
      * selalu simpan nama file pada file yang menyimpan list file yang ada dengan kondisi terurut secara ascending
      */
-    public void commit(){
-        
+    public void commit() throws IOException {
+        int fileEdgeKe = 0;
+        int fileNodeKe = 0;
+        int fileGraphKe = 0;
+        JSONObject objGraph = new JSONObject();
+        JSONArray ListNode = new JSONArray();
+        JSONObject objListNode = new JSONObject();
+
+        JSONObject objNode = new JSONObject();
+        JSONArray ListEdge = new JSONArray();
+        JSONObject objListEdge = new JSONObject();
+        JSONObject properties = new JSONObject();
+
+        JSONObject objEdge = new JSONObject();
+
+        for (int i = 0; i < listGraph.size(); i++) {
+            if (i % 50==0) {
+                fileGraphKe++;
+            }
+            objGraph.put("id", listGraph.get(i).getId());
+            objListNode.put("node", listGraph.get(i).getListNode().get(i).getLabel());
+            ListNode.add(objListNode);
+
+            for (int j = 0; j < listGraph.get(i).getListNode().size(); j++) {
+                if (j % 50==0) {
+                    fileNodeKe++;
+                }
+                objNode.put("id", listGraph.get(i).getListNode().get(i).getId());
+                objNode.put("label", listGraph.get(i).getListNode().get(i).getLabel());
+                objNode.putAll(listGraph.get(i).getListNode().get(i).getProperties());
+                objListEdge.put("edge", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getLabel());
+                ListEdge.add(objListEdge);
+
+                for (int k = 0; k < listGraph.get(i).getListNode().get(i).getListEdge().size(); k++) {
+                    if (k % 50 ==0) {
+                        fileEdgeKe++;
+                    }
+                    objEdge.put("id", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
+                    objEdge.put("label", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
+                    objEdge.putAll(listGraph.get(i).getListNode().get(i).getListEdge().get(i).getProperties());
+                    objEdge.put("neighbour", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getNeighbour());
+
+                }
+            }
+        }
+        objGraph.put("List Node", ListNode);
+        objNode.put("List Edge", ListEdge);
+
+        FileWriter graph = new FileWriter(LIST_GRAPH_ID_FILE_NAME+fileGraphKe);
+        FileWriter node = new FileWriter(LIST_NODE_FILE_NAME+fileNodeKe);
+        FileWriter edge = new FileWriter(LIST_NODE_FILE_NAME + fileEdgeKe);
+
+        graph.write(objGraph.toJSONString());
+        graph.flush();
+        graph.close();
+
+        node.write(objNode.toJSONString());
+        node.flush();
+        node.close();
+
+        edge.write(objEdge.toJSONString());
+        edge.flush();
+        edge.close();
+
     }
 
     /**
