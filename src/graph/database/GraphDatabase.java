@@ -5,6 +5,7 @@
 package graph.database;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -25,12 +26,12 @@ import org.json.simple.parser.ParseException;
  */
 public class GraphDatabase {
     // definisikan segala konstanta yang dibutuhkan oleh class graph database disini
-    private final String LIST_NODE_FILE_NAME = "data\\list_node";
-    private final String LIST_EDGE_FILE_NAME = "data\\list_edge";        
-    private final String LIST_GRAPH_ID_FILE_NAME = "data\\list_graph_id";
-    private final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
-    private final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
-    private final String LIST_ID_KEY = "listId";
+    public final String LIST_NODE_FILE_NAME = "data\\list_node";
+    public final String LIST_EDGE_FILE_NAME = "data\\list_edge";        
+    public final String LIST_GRAPH_ID_FILE_NAME = "data\\list_graph_id";
+    public final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
+    public final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
+    public final String LIST_ID_KEY = "listId";
 
     private List<Graph> listGraph;
     private List<Long> listIdGraph;
@@ -173,7 +174,7 @@ public class GraphDatabase {
                 objNode.put("id", listGraph.get(i).getListNode().get(i).getId());
                 objNode.put("label", listGraph.get(i).getListNode().get(i).getLabel());
                 objNode.putAll(listGraph.get(i).getListNode().get(i).getProperties());
-                objListEdge.put("edge", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getLabel());
+                objListEdge.put("edge", listGraph.get(i).getListNode().get(i).getListEdge().get(j).getLabel());
                 ListEdge.add(objListEdge);
 
                 for (int k = 0; k < listGraph.get(i).getListNode().get(i).getListEdge().size(); k++) {
@@ -293,98 +294,85 @@ public class GraphDatabase {
         String pathFile;
         if (type == Edge.class) {
             if (listIdEdge == null) {
-                // sinkronisasi start
-                listIdEdge = new ArrayList<Long>();
-                FileReader reader = new FileReader(LIST_EDGE_FILE_NAME);
-                JSONParser parser = new JSONParser();
-                BufferedReader br = new BufferedReader(reader);
+                File file = new File(LIST_EDGE_FILE_NAME);
+                if(file.exists()) {
+                    // sinkronisasi start
+                    listIdEdge = new ArrayList<Long>();
+                    FileReader reader = new FileReader(LIST_EDGE_FILE_NAME);
+                    JSONParser parser = new JSONParser();
+                    BufferedReader br = new BufferedReader(reader);
 
-                obj = (JSONObject) parser.parse(reader);
-                listId = (JSONArray) obj.get(LIST_ID_KEY);
-                iterator = listId.iterator();
-                while (iterator.hasNext()) {
-                    listIdEdge.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                    obj = (JSONObject) parser.parse(reader);
+                    listId = (JSONArray) obj.get(LIST_ID_KEY);
+                    iterator = listId.iterator();
+                    while (iterator.hasNext()) {
+                        listIdEdge.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
+                    }
+                    // sinkronisasi end
                 }
-                // sinkronisasi end
                 
-                for (long i : listIdEdge) {
-                    if (i != count) {
-                        break;
-                    }
-                    count++;
-                }
-                id = count;
-            } else {
-                for (long i : listIdEdge) {
-                    if (i != count) {
-                        break;
-                    }
-                    count++;
-                }
-                id = count;
             }
+            
+            for (long i : listIdEdge) {
+                if (i != count) {
+                    break;
+                }
+                count++;
+            }
+            id = count;
         } else if (type == Node.class) {
             if (listIdNode == null) {
-                // sinkronisasi start
                 listIdNode = new ArrayList<Long>();
-                FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
-                JSONParser parser = new JSONParser();
-                BufferedReader br = new BufferedReader(reader);
+                File file = new File(LIST_NODE_ID_FILE_NAME);
+                if(file.exists()) {
+                    // sinkronisasi start
+                    FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
+                    JSONParser parser = new JSONParser();
+                    BufferedReader br = new BufferedReader(reader);
 
-                obj = (JSONObject) parser.parse(reader);
-                listId = (JSONArray) obj.get(LIST_ID_KEY);
-                iterator = listId.iterator();
-                while (iterator.hasNext()) {
-                    listIdNode.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
-                }
-                // sinkronisasi end
-                for (long i : listIdNode) {
-                    if (i != count) {
-                        break;
+                    obj = (JSONObject) parser.parse(reader);
+                    listId = (JSONArray) obj.get(LIST_ID_KEY);
+                    iterator = listId.iterator();
+                    while (iterator.hasNext()) {
+                        listIdNode.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
                     }
-                    count++;
+                    // sinkronisasi end
                 }
-                id = count;
-            } else {
-                for (long i : listIdNode) {
-                    if (i != count) {
-                        break;
-                    }
-                    count++;
-                }
-                id = count;
             }
+            for (long i : listIdNode) {
+                if (i != count) {
+                    break;
+                }
+                count++;
+            }
+            id = count;
         } else if (type == Graph.class) {
             if (listIdGraph == null) {
-                // sinkronisasi start
+               
                 listIdGraph = new ArrayList<Long>();
-                FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
-                JSONParser parser = new JSONParser();
-                BufferedReader br = new BufferedReader(reader);
+                File file = new File(LIST_GRAPH_ID_FILE_NAME);
+                if(file.exists()){
+                    // sinkronisasi start
+                    FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
+                    JSONParser parser = new JSONParser();
+                    BufferedReader br = new BufferedReader(reader);
 
-                obj = (JSONObject) parser.parse(reader);
-                listId = (JSONArray) obj.get(LIST_ID_KEY);
-                iterator = listId.iterator();
-                while (iterator.hasNext()) {
-                    listIdGraph.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
-                }
-                // sinkronisasi end
-                for (long i : listIdGraph) {
-                    if (i != count) {
-                        break;
+                    obj = (JSONObject) parser.parse(reader);
+                    listId = (JSONArray) obj.get(LIST_ID_KEY);
+                    iterator = listId.iterator();
+                    while (iterator.hasNext()) {
+                        listIdGraph.add(Long.parseLong(iterator.next().toString().replaceAll("[a-zA-Z]+", "")));
                     }
-                    count++;
+                    // sinkronisasi end
                 }
-                id = count;
-            } else {
-                for (long i : listIdGraph) {
-                    if (i != count) {
-                        break;
-                    }
-                    count++;
-                }
-                id = count;
             }
+            for (long i : listIdGraph) {
+                if (i != count) {
+                    break;
+                }
+                count++;
+            }
+            id = count;
         } else {
             throw new NoSuchElementException("salah pemilihan type yang akan di generate id-nya");
         }
@@ -401,5 +389,12 @@ public class GraphDatabase {
     public List<Graph> findSeparatedGraph(Graph graph){
         List<Graph> result = null;
         return result;
+    }
+
+   /*
+    * getter
+    */
+    public List<Graph> getListGraph() {
+        return listGraph;
     }
 }
