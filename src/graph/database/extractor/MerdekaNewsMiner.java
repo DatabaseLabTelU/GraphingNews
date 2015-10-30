@@ -1,17 +1,19 @@
-package graph.database;
+package graph.database.extractor;
 
+import graph.database.DataType;
+import graph.database.Node;
+import graph.database.Property;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 /**
- * class ini bertanggung jawab untuk proses mining dari text
+ *
+ * @author Febrian
  */
-public class NewsMiner {
+public class MerdekaNewsMiner extends NewsMiner {
 
-    private Document document;
-
-    public NewsMiner(Document document) {
-        this.document = document;
+    public MerdekaNewsMiner(Document document) {
+        super(document);
     }
 
     /**
@@ -19,6 +21,7 @@ public class NewsMiner {
      *
      * @return node
      */
+    @Override
     public Node getAsNode() {
         Node n = new Node();
         n.addProperty("author", new Property(getAuthor(), DataType.String));
@@ -35,6 +38,7 @@ public class NewsMiner {
      *
      * @return judul berita
      */
+    @Override
     public String getTitle() {
         return document.title().split("\\|")[0];
     }
@@ -46,6 +50,7 @@ public class NewsMiner {
      *
      * @return author dari berita
      */
+    @Override
     public String getAuthor() {
         Element author = document.select("div#mdk-body-news-reporter").first();
         if (author == null || !author.text().contains("|")) {
@@ -62,6 +67,7 @@ public class NewsMiner {
      *
      * @return tanggal publish berita
      */
+    @Override
     public String getDate() {
         Element tanggal = document.select("div#mdk-body-news-reporter").first();
         if (tanggal == null || !tanggal.text().contains("|")) {
@@ -78,6 +84,7 @@ public class NewsMiner {
      *
      * @return artikel dalam berita
      */
+    @Override
     public String getArticle() {
         Element article = document.select("div#mdk-body-newsarea").first();
         return article == null ? null : article.text();

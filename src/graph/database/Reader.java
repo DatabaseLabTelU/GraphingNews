@@ -4,6 +4,7 @@
  */
 package graph.database;
 
+import graph.database.extractor.NewsMiner;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
