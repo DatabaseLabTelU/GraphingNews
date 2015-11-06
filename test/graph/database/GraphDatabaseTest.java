@@ -27,10 +27,12 @@ public class GraphDatabaseTest {
             System.out.println("test");
             Node node = new Node();
             node.addProperty("nama", new Property("basdat1", DataType.String));
+            node.setLabel("node1");
             gdb.addNode(node);
             
             node = new Node();
             node.addProperty("nama", new Property("basdat2", DataType.String));
+            node.setLabel("node2");
             gdb.addNode(node);
             
             gdb.commit();
@@ -50,6 +52,7 @@ public class GraphDatabaseTest {
         }
         
         file = new File(gdb.LIST_NODE_ID_FILE_NAME);
+
         if(!file.exists())
         {
             fail(gdb.LIST_NODE_ID_FILE_NAME + " tidak ada");

@@ -25,9 +25,10 @@ import org.json.simple.parser.ParseException;
  * class ini berguna untuk menangani objek graph database
  */
 public class GraphDatabase {
+
     // definisikan segala konstanta yang dibutuhkan oleh class graph database disini
     public final String LIST_NODE_FILE_NAME = "data\\list_node";
-    public final String LIST_EDGE_FILE_NAME = "data\\list_edge";        
+    public final String LIST_EDGE_FILE_NAME = "data\\list_edge";
     public final String LIST_GRAPH_ID_FILE_NAME = "data\\list_graph_id";
     public final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
     public final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
@@ -38,111 +39,119 @@ public class GraphDatabase {
     private List<Long> listIdNode;
     private List<Long> listIdEdge;
 
-    
     /**
      * Default Constructor
      */
-    public GraphDatabase(){
+    public GraphDatabase() {
         listGraph = new ArrayList<Graph>();
     }
-    
+
     /**
-     * Contributor : 
-     *  - isjhar kautsar (isjhar@gmail.com)
-     * method yang digunakan untuk memasukkan 1 node ke dalam graph database
-     * IS : jumlah graph dalam database sebanyak n dan jumlah node sebanyak m
-     * FS : jumlah graph dalam database sebanyak n + 1 dan jumlah node sebanyak m + 1
+     * Contributor : - isjhar kautsar (isjhar@gmail.com) method yang digunakan
+     * untuk memasukkan 1 node ke dalam graph database IS : jumlah graph dalam
+     * database sebanyak n dan jumlah node sebanyak m FS : jumlah graph dalam
+     * database sebanyak n + 1 dan jumlah node sebanyak m + 1
+     *
      * @param node node yang akan dimasukkan
-     * 
-     * generate ada inisiasi id node yang akan di masukkan dilakukan dalam method ini
+     *
+     * generate ada inisiasi id node yang akan di masukkan dilakukan dalam
+     * method ini
      */
-    public void addNode(Node node) throws IOException, FileNotFoundException, NoSuchElementException, ParseException{
+    public void addNode(Node node) throws IOException, FileNotFoundException, NoSuchElementException, ParseException {
         // buat object graph
         Graph graph = new Graph();
-        
+
         // generate id graph
         graph.setId(generateId(Graph.class));
-        
+
         // genearete id node
         node.setId(generateId(Node.class));
-        
+
         // add node
         graph.addNode(node);
-        
+
         // add to list
         listGraph.add(graph);
     }
-    
+
     /**
-     * method yang digunakan untuk menghapus 1 node dari dalam graph database
-     * IS : jumlah graph dalam database sebanyak n dan jumlah node sebanyak m
-     * FS : node terhapus,
-     *  jumlah node menjadi sebanyak m - 1 dan jika graph asal node tersebut membentuk graph baru sebanyak a buah, maka
-     *  jumlah graph dalam database sebanyak n + a, dan jika tidak, maka jumlahnya tetap sebanyak n
+     * method yang digunakan untuk menghapus 1 node dari dalam graph database IS
+     * : jumlah graph dalam database sebanyak n dan jumlah node sebanyak m FS :
+     * node terhapus, jumlah node menjadi sebanyak m - 1 dan jika graph asal
+     * node tersebut membentuk graph baru sebanyak a buah, maka jumlah graph
+     * dalam database sebanyak n + a, dan jika tidak, maka jumlahnya tetap
+     * sebanyak n
+     *
      * @param node node yang akan dihapus
      */
-    public void removeNode(Node node){
-        
+    public void removeNode(Node node) {
+
     }
-    
+
     /**
-     * method ini digunakan untuk menambahkan relasi dari antara dua node
-     * IS : jumlah graph sebanyak n dan
-     *  jumlah elemen pada listEdge yang menjadi source node sebanyak m
-     * FS : jika node yang menjadi source dan node yang menjadi destination barada pada dua graph yang berbeda maka
-     *  jumlah graph ada sebanyak n - 1, jika tidak maka jumlah graph sebanyak n, dan
-     *  jumlah elemen pada listEdge yang menjadi source node sebanyak m + 1
-     *  edge yang akan dimasukkan sudah berada dalam listEdge pada source node dan destination node pada edge sudah diset
+     * method ini digunakan untuk menambahkan relasi dari antara dua node IS :
+     * jumlah graph sebanyak n dan jumlah elemen pada listEdge yang menjadi
+     * source node sebanyak m FS : jika node yang menjadi source dan node yang
+     * menjadi destination barada pada dua graph yang berbeda maka jumlah graph
+     * ada sebanyak n - 1, jika tidak maka jumlah graph sebanyak n, dan jumlah
+     * elemen pada listEdge yang menjadi source node sebanyak m + 1 edge yang
+     * akan dimasukkan sudah berada dalam listEdge pada source node dan
+     * destination node pada edge sudah diset
+     *
      * @param source source node
      * @param destination node yang akan dituju
      * @param edge edge yang akan ditambahkan
-     * 
+     *
      * generate id edge dilakukan di method ini
      */
-    public void addRelation(Node nSource, Node nDestination, Edge edge){
-             
+    public void addRelation(Node nSource, Node nDestination, Edge edge) {
+
     }
-    
-    
-    
+
     /**
-     * method ini digunakan untuk menambahkan relasi antar node dengan memperoleh informasi dari JSONObject
-     * hasil parse dari file edge
-     * IS : edge berupa JSONObject sudah terdefinisi
-     * FS : edge yang berupa JSONObject sudah dikonversi menjadi object edge dan telah ditambahkan pada listEdge pada source node
+     * method ini digunakan untuk menambahkan relasi antar node dengan
+     * memperoleh informasi dari JSONObject hasil parse dari file edge IS : edge
+     * berupa JSONObject sudah terdefinisi FS : edge yang berupa JSONObject
+     * sudah dikonversi menjadi object edge dan telah ditambahkan pada listEdge
+     * pada source node
+     *
      * @param edge edge yang akan ditambahkan
      */
-    public void addRelation(JSONObject edge){
-        
+    public void addRelation(JSONObject edge) {
+
     }
-    
-    
+
     /**
-     * method ini digunakan untuk menghapus edge yang ada pada source node
-     * IS : jumlah graph dalam database sebanyak n dan jumlah edge sebanyak m
-     * FS : edge pada node source terhapus, jumlah edge menjadi m - 1 dan
-     * jika pada saat penghapusan edge terjadi pembentukan graph baru sebanyak a, 
-     * maka jumlah graph menjadi n + a
+     * method ini digunakan untuk menghapus edge yang ada pada source node IS :
+     * jumlah graph dalam database sebanyak n dan jumlah edge sebanyak m FS :
+     * edge pada node source terhapus, jumlah edge menjadi m - 1 dan jika pada
+     * saat penghapusan edge terjadi pembentukan graph baru sebanyak a, maka
+     * jumlah graph menjadi n + a
+     *
      * @param edge edge yang akan dihapus graph database
-     * 
+     *
      */
-    public void removeRelation(Node source, Edge edge){
-        
+    public void removeRelation(Node source, Edge edge) {
+
     }
-    
+
     /**
-     * method ini digunakan untuk menyimpan seluruh perubahan data yang terjadi kedalam file.
-     * IS : data yang akan disimpan atau diupdate sudah berada pada listGraph
-     * FS : data yang ada pada listGraph telah disimpan ke dalam file, 
-     *  file yang menyimpan list node, list edge, list id graph, list id node, list id edge terupdate, 
-     * 
-     * data yang disimpan dan yang diupdate adalah data yang hanya terdapat pada variable listGraph.
-     * ingat! 1 graph akan disimpan pada minimal 2 file, yaitu 1 file untuk menyimpan kumpulan node 
-     * yang ada pada graph tersebut dan 1 file untuk menyimpan kumpulan edge yg ada. 
-     * jika jumlah node atau edge yang akan disimpan lebih dari 50, maka simpan pada file yang terpisah. 
-     * selalu cek dulu apakah graph yang akan diupdate sudah pernah ditulis pada file atau belum.
-     * jika sudah, berarti hapus semua file yang lama dahulu sebelum tulis file yang baru
-     * selalu simpan nama file pada file yang menyimpan list file yang ada dengan kondisi terurut secara ascending
+     * method ini digunakan untuk menyimpan seluruh perubahan data yang terjadi
+     * kedalam file. IS : data yang akan disimpan atau diupdate sudah berada
+     * pada listGraph FS : data yang ada pada listGraph telah disimpan ke dalam
+     * file, file yang menyimpan list node, list edge, list id graph, list id
+     * node, list id edge terupdate,
+     *
+     * data yang disimpan dan yang diupdate adalah data yang hanya terdapat pada
+     * variable listGraph. ingat! 1 graph akan disimpan pada minimal 2 file,
+     * yaitu 1 file untuk menyimpan kumpulan node yang ada pada graph tersebut
+     * dan 1 file untuk menyimpan kumpulan edge yg ada. jika jumlah node atau
+     * edge yang akan disimpan lebih dari 50, maka simpan pada file yang
+     * terpisah. selalu cek dulu apakah graph yang akan diupdate sudah pernah
+     * ditulis pada file atau belum. jika sudah, berarti hapus semua file yang
+     * lama dahulu sebelum tulis file yang baru selalu simpan nama file pada
+     * file yang menyimpan list file yang ada dengan kondisi terurut secara
+     * ascending
      */
     public void commit() throws IOException {
         int fileEdgeKe = 0;
@@ -158,132 +167,161 @@ public class GraphDatabase {
         JSONObject properties = new JSONObject();
 
         JSONObject objEdge = new JSONObject();
-
+        System.out.println(listGraph.size());
         for (int i = 0; i < listGraph.size(); i++) {
-            if (i % 50==0) {
+            if (i % 50 == 0) {
                 fileGraphKe++;
             }
+            System.out.println(i);
+            System.out.println(listGraph.get(i).getId());
             objGraph.put("id", listGraph.get(i).getId());
-            objListNode.put("node", listGraph.get(i).getListNode().get(i).getLabel());
-            ListNode.add(objListNode);
 
             for (int j = 0; j < listGraph.get(i).getListNode().size(); j++) {
-                if (j % 50==0) {
+                objListNode.put("node", listGraph.get(i).getListNode().get(j).getLabel());
+                ListNode.add(objListNode);
+                System.out.println("node");
+                if (j % 50 == 0) {
                     fileNodeKe++;
                 }
-                objNode.put("id", listGraph.get(i).getListNode().get(i).getId());
-                objNode.put("label", listGraph.get(i).getListNode().get(i).getLabel());
-                objNode.putAll(listGraph.get(i).getListNode().get(i).getProperties());
-                objListEdge.put("edge", listGraph.get(i).getListNode().get(i).getListEdge().get(j).getLabel());
-                ListEdge.add(objListEdge);
-
-                for (int k = 0; k < listGraph.get(i).getListNode().get(i).getListEdge().size(); k++) {
-                    if (k % 50 ==0) {
-                        fileEdgeKe++;
+                if (listGraph.get(i).getListNode().get(j) != null) {
+                    System.out.println("masuk node " + j);
+                    objNode.put("id", listGraph.get(i).getListNode().get(j).getId());
+                    objNode.put("label", listGraph.get(i).getListNode().get(j).getLabel());
+                    objNode.putAll(listGraph.get(i).getListNode().get(j).getProperties());
+                    if (listGraph.get(i).getListNode().get(j).getListEdge().size() > 0) {
+                        for (int l = 0; l < listGraph.get(i).getListNode().get(j).getListEdge().size(); l++) {
+                            objListEdge.put("edge", listGraph.get(i).getListNode().get(j).getListEdge().get(l).getLabel());
+                        }
                     }
-                    objEdge.put("id", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
-                    objEdge.put("label", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getId());
-                    objEdge.putAll(listGraph.get(i).getListNode().get(i).getListEdge().get(i).getProperties());
-                    objEdge.put("neighbour", listGraph.get(i).getListNode().get(i).getListEdge().get(i).getNeighbour());
-
+                    ListEdge.add(objListEdge);
+                    if (listGraph.get(i).getListNode().get(j).getListEdge().size() > 0) {
+                        for (int k = 0; k < listGraph.get(i).getListNode().get(j).getListEdge().size(); k++) {
+                            if (k % 50 == 0) {
+                                fileEdgeKe++;
+                            }
+                            if (listGraph.get(i).getListNode().get(j).getListEdge().get(k) != null) {
+                                objEdge.put("id", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
+                                objEdge.put("label", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
+                                objEdge.putAll(listGraph.get(i).getListNode().get(j).getListEdge().get(k).getProperties());
+                                objEdge.put("neighbour", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getNeighbour());
+                            }
+                            objNode.put("List Edge", ListEdge);
+                            FileWriter edge = new FileWriter(LIST_NODE_FILE_NAME + fileEdgeKe);
+                            edge.write(objEdge.toJSONString());
+                            edge.flush();
+                            edge.close();
+                        }
+                    }
                 }
+                objGraph.put("List Node", ListNode);
+                FileWriter node = new FileWriter(LIST_NODE_FILE_NAME + fileNodeKe);
+                node.write(objNode.toJSONString());
+                node.flush();
+                node.close();
             }
+            FileWriter graph = new FileWriter(LIST_GRAPH_ID_FILE_NAME + fileGraphKe);
+            graph.write(objGraph.toJSONString());
+            graph.flush();
+            graph.close();
+
+            FileReader fr = new FileReader(LIST_GRAPH_ID_FILE_NAME + fileGraphKe);
+            char[] a = new char[50];
+            fr.read(a); // reads the content to the array
+            for (char c : a) {
+                System.out.print(c); //prints the characters one by one
+            }
+            fr.close();
         }
-        objGraph.put("List Node", ListNode);
-        objNode.put("List Edge", ListEdge);
-
-        FileWriter graph = new FileWriter(LIST_GRAPH_ID_FILE_NAME+fileGraphKe);
-        FileWriter node = new FileWriter(LIST_NODE_FILE_NAME+fileNodeKe);
-        FileWriter edge = new FileWriter(LIST_NODE_FILE_NAME + fileEdgeKe);
-
-        graph.write(objGraph.toJSONString());
-        graph.flush();
-        graph.close();
-
-        node.write(objNode.toJSONString());
-        node.flush();
-        node.close();
-
-        edge.write(objEdge.toJSONString());
-        edge.flush();
-        edge.close();
 
     }
 
     /**
-     * method ini digunakan untuk mencari node dalam graph database berdasarkan id
-     * IS : id yang akan dicari telah didefinisikan, listGraph kemungkinan kosong
-     * FS : graph yang telah di-retrieve dari hard disk karena proses pencari akan disimpan ke dalam listGraph dan
-     *  jika data tidak ditemukan maka method ini akan mengembalikan null, 
-     *  dan jika data ditemukan maka method ini akan mengembalikan Node tersebut
+     * method ini digunakan untuk mencari node dalam graph database berdasarkan
+     * id IS : id yang akan dicari telah didefinisikan, listGraph kemungkinan
+     * kosong FS : graph yang telah di-retrieve dari hard disk karena proses
+     * pencari akan disimpan ke dalam listGraph dan jika data tidak ditemukan
+     * maka method ini akan mengembalikan null, dan jika data ditemukan maka
+     * method ini akan mengembalikan Node tersebut
+     *
      * @param id id node yang akan dicari
      * @return Object node yang akan dicari
-     * 
-     * pencarian dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di cek pada variable listGraph
-     * jika ada, maka outputkan nodenya
-     * jika tidak ada, maka cari di hardisk
-     * telusuri data per graph 
+     *
+     * pencarian dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di
+     * cek pada variable listGraph jika ada, maka outputkan nodenya jika tidak
+     * ada, maka cari di hardisk telusuri data per graph
      */
-    public Node findNodeById(long id){
+    public Node findNodeById(long id) {
         Node result = null;
         return result;
     }
-    
+
     /**
-     * method ini digunakan untuk mencari node dalam graph database berdasarkan properties
-     * IS : proerties yang akan dicari telah didefinisikan, listGraph kemungkinan kosong
-     * FS : graph yang telah di-retrieve dari hard disk karena proses pencari akan disimpan ke dalam listGraph dan
-     *  jika data tidak ditemukan maka method ini akan mengembalikan null, 
-     *  dan jika ada data yang ditemukan maka method ini akan mengembalikan List<Node> tersebut
-     * @param properties daftar properties yang akan dicocokkan dengan data yang ada
+     * method ini digunakan untuk mencari node dalam graph database berdasarkan
+     * properties IS : proerties yang akan dicari telah didefinisikan, listGraph
+     * kemungkinan kosong FS : graph yang telah di-retrieve dari hard disk
+     * karena proses pencari akan disimpan ke dalam listGraph dan jika data
+     * tidak ditemukan maka method ini akan mengembalikan null, dan jika ada
+     * data yang ditemukan maka method ini akan mengembalikan List<Node>
+     * tersebut
+     *
+     * @param properties daftar properties yang akan dicocokkan dengan data yang
+     * ada
      * @return list dari node yang ditemukan
-     * 
-     * pencarian dilakukan dengan menelusuri seluruh graph tetapi
-     * pencarian dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di cek pada variable listGraph
-     * setelah itu, lalu retrieve yang belum di retrieve     
+     *
+     * pencarian dilakukan dengan menelusuri seluruh graph tetapi pencarian
+     * dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di cek pada
+     * variable listGraph setelah itu, lalu retrieve yang belum di retrieve
      */
-    public List<Node> findNodeByProperties(HashMap<String, Property> properties){
+    public List<Node> findNodeByProperties(HashMap<String, Property> properties) {
         List<Node> result = null;
         return result;
     }
-    
+
     /**
-     * method ini digunakan untuk mencari node dalam graph database berdasarkan label
-     * IS : label yang akan dicari telah didefinisikan, listGraph kemungkinan kosong
-     * FS : graph yang telah di-retrieve dari hard disk karena proses pencari akan disimpan ke dalam listGraph dan
-     *  jika data tidak ditemukan maka method ini akan mengembalikan null, 
-     *  dan jika ada data yang ditemukan maka method ini akan mengembalikan List<Node> tersebut
+     * method ini digunakan untuk mencari node dalam graph database berdasarkan
+     * label IS : label yang akan dicari telah didefinisikan, listGraph
+     * kemungkinan kosong FS : graph yang telah di-retrieve dari hard disk
+     * karena proses pencari akan disimpan ke dalam listGraph dan jika data
+     * tidak ditemukan maka method ini akan mengembalikan null, dan jika ada
+     * data yang ditemukan maka method ini akan mengembalikan List<Node>
+     * tersebut
+     *
      * @param label label yang akan dicocokkan dengan data yang ada
      * @return list dari node yang ditemukan
-     * 
-     * pencarian dilakukan dengan menelusuri seluruh graph tetapi
-     * pencarian dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di cek pada variable listGraph
-     * setelah itu, lalu retrieve yang belum di retrieve
+     *
+     * pencarian dilakukan dengan menelusuri seluruh graph tetapi pencarian
+     * dilakukan terlebih dahulu dilakukan di cek di memori, yaitu di cek pada
+     * variable listGraph setelah itu, lalu retrieve yang belum di retrieve
      */
-    public List<Node> findNodeByLabel(String label){
+    public List<Node> findNodeByLabel(String label) {
         List<Node> result = null;
         return result;
     }
-    
+
     /**
-     * method ini digunakan untuk me-retrieve data graph dari hard disk ke memory
+     * method ini digunakan untuk me-retrieve data graph dari hard disk ke
+     * memory
+     *
      * @param fileName nama file yang akan diretrieve
      * @return graph yang sesuai dengan nama file
-     * 
-     * format nama file yang digunakan untuk node : graph_(id_graph)_(no_partisi)_node 
-     * format nama file yang digunakan untuk edge : graph_(id_graph)_(no_partisi)_edge
-     * format yang di pass pada parameter cukup : graph_(id_graph)
+     *
+     * format nama file yang digunakan untuk node :
+     * graph_(id_graph)_(no_partisi)_node format nama file yang digunakan untuk
+     * edge : graph_(id_graph)_(no_partisi)_edge format yang di pass pada
+     * parameter cukup : graph_(id_graph)
      */
-    public Graph getGraph(String fileName){
+    public Graph getGraph(String fileName) {
         Graph result = null;
         return result;
     }
-    
+
     /**
      * method ini digunakan untuk generate id graph, node, atau edge
+     *
      * @param type type Graph, Node, atau Edge
-     * 
-     * pencarian id yang tersedia dilakukan melalui pengecekan pada memori terlebih dahulu lalu pada hard disk
+     *
+     * pencarian id yang tersedia dilakukan melalui pengecekan pada memori
+     * terlebih dahulu lalu pada hard disk
      */
     private long generateId(Class<?> type) throws FileNotFoundException, IOException, NoSuchElementException, ParseException {
         long id = -1;
@@ -295,7 +333,7 @@ public class GraphDatabase {
         if (type == Edge.class) {
             if (listIdEdge == null) {
                 File file = new File(LIST_EDGE_FILE_NAME);
-                if(file.exists()) {
+                if (file.exists()) {
                     // sinkronisasi start
                     listIdEdge = new ArrayList<Long>();
                     FileReader reader = new FileReader(LIST_EDGE_FILE_NAME);
@@ -310,9 +348,9 @@ public class GraphDatabase {
                     }
                     // sinkronisasi end
                 }
-                
+
             }
-            
+
             for (long i : listIdEdge) {
                 if (i != count) {
                     break;
@@ -324,7 +362,7 @@ public class GraphDatabase {
             if (listIdNode == null) {
                 listIdNode = new ArrayList<Long>();
                 File file = new File(LIST_NODE_ID_FILE_NAME);
-                if(file.exists()) {
+                if (file.exists()) {
                     // sinkronisasi start
                     FileReader reader = new FileReader(LIST_NODE_ID_FILE_NAME);
                     JSONParser parser = new JSONParser();
@@ -348,10 +386,10 @@ public class GraphDatabase {
             id = count;
         } else if (type == Graph.class) {
             if (listIdGraph == null) {
-               
+
                 listIdGraph = new ArrayList<Long>();
                 File file = new File(LIST_GRAPH_ID_FILE_NAME);
-                if(file.exists()){
+                if (file.exists()) {
                     // sinkronisasi start
                     FileReader reader = new FileReader(LIST_GRAPH_ID_FILE_NAME);
                     JSONParser parser = new JSONParser();
@@ -379,21 +417,22 @@ public class GraphDatabase {
         return id;
     }
 
-    
     /**
-     * method ini digunakan untuk mencari graph yang terbentuk dalam sebuah graph.
-     * graph dalam graph bakal terjadi ketika proses penghapusan node atau edge dilakukan
+     * method ini digunakan untuk mencari graph yang terbentuk dalam sebuah
+     * graph. graph dalam graph bakal terjadi ketika proses penghapusan node
+     * atau edge dilakukan
+     *
      * @param graph graph yang akan di cari jumlah graph yang telah terpisah
      * @return kumpulan graph yang ditemukan
      */
-    public List<Graph> findSeparatedGraph(Graph graph){
+    public List<Graph> findSeparatedGraph(Graph graph) {
         List<Graph> result = null;
         return result;
     }
 
-   /*
-    * getter
-    */
+    /*
+     * getter
+     */
     public List<Graph> getListGraph() {
         return listGraph;
     }
