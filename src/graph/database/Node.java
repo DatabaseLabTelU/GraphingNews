@@ -159,6 +159,10 @@ public class Node {
      * @return the edges
      */
     public List<Edge> getListEdge() {
+        if (listEdge == null) {
+            // instantsiate listEdge
+            listEdge = new ArrayList<Edge>();
+        }
         return Collections.unmodifiableList(listEdge);
 //        return listEdge;
     }

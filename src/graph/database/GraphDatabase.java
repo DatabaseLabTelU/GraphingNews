@@ -33,6 +33,8 @@ public class GraphDatabase {
     public final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
     public final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
     public final String LIST_ID_KEY = "listId";
+    public final String NODE_KEY = "node";
+    public final String EDGE_KEY = "edge";
 
     private List<Graph> listGraph;
     private List<Long> listIdGraph;
