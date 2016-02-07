@@ -27,8 +27,8 @@ import org.json.simple.parser.ParseException;
 public class GraphDatabase {
 
     // definisikan segala konstanta yang dibutuhkan oleh class graph database disini
-    public final String LIST_NODE_FILE_NAME = "data\\list_node";
-    public final String LIST_EDGE_FILE_NAME = "data\\list_edge";
+    public final String LIST_NODE_FILE_NAME = "data\\graph_node_";
+    public final String LIST_EDGE_FILE_NAME = "data\\graph_edge_";
     public final String LIST_GRAPH_ID_FILE_NAME = "data\\list_graph_id";
     public final String LIST_NODE_ID_FILE_NAME = "data\\list_node_id";
     public final String LIST_EDGE_ID_FILE_NAME = "data\\list_edge_id";
@@ -163,78 +163,79 @@ public class GraphDatabase {
         JSONArray ListNode = new JSONArray();
         JSONObject objListNode = new JSONObject();
 
-        JSONObject objNode = new JSONObject();
-        JSONArray ListEdge = new JSONArray();
-        JSONObject objListEdge = new JSONObject();
-        JSONObject properties = new JSONObject();
+        JSONArray ListProperty = new JSONArray();
+        JSONObject objProperty = new JSONObject();
 
-        JSONObject objEdge = new JSONObject();
-        System.out.println(listGraph.size());
+        JSONArray ListIdGraph = new JSONArray();
+        JSONObject objIdGraph = new JSONObject();
+
+        JSONArray ListIdNode = new JSONArray();
+        JSONObject objIdNode = new JSONObject();
+        
+        JSONArray ListIdEdge = new JSONArray();
+        JSONObject objIdEdge = new JSONObject();
+
         for (int i = 0; i < listGraph.size(); i++) {
+            ListIdGraph.add(listGraph.get(i).getId());
             if (i % 50 == 0) {
                 fileGraphKe++;
             }
-            System.out.println(i);
-            System.out.println(listGraph.get(i).getId());
-            objGraph.put("id", listGraph.get(i).getId());
 
             for (int j = 0; j < listGraph.get(i).getListNode().size(); j++) {
-                objListNode.put("node", listGraph.get(i).getListNode().get(j).getLabel());
+
+                ListIdNode.add(listGraph.get(i).getListNode().get(j).getId());
+
+                objProperty = new JSONObject();
+                objProperty.put("key", "judul");
+                objProperty.put("value", listGraph.get(i).getListNode().get(j).getProperties().get("judul").getValue());
+                objProperty.put("dataType", listGraph.get(i).getListNode().get(j).getProperties().get("judul").getDataType());
+                ListProperty.add(objProperty);
+
+                objProperty = new JSONObject();
+                objProperty.put("key", "artikel");
+                objProperty.put("value", listGraph.get(i).getListNode().get(j).getProperties().get("artikel").getValue());
+                objProperty.put("dataType", listGraph.get(i).getListNode().get(j).getProperties().get("artikel").getDataType());
+                ListProperty.add(objProperty);
+
+                objProperty = new JSONObject();
+                objProperty.put("key", "tanggal");
+                objProperty.put("value", listGraph.get(i).getListNode().get(j).getProperties().get("tanggal").getValue());
+                objProperty.put("dataType", listGraph.get(i).getListNode().get(j).getProperties().get("tanggal").getDataType());
+                ListProperty.add(objProperty);
+//                }
+                objListNode.put("properties", ListProperty);
+                objListNode.put("Label", listGraph.get(i).getListNode().get(j).getLabel());
+                objListNode.put("Id", listGraph.get(i).getListNode().get(j).getId());
                 ListNode.add(objListNode);
-                System.out.println("node");
-                if (j % 50 == 0) {
-                    fileNodeKe++;
+                
+                for (int k = 0; k < listGraph.get(i).getListNode().get(j).getListEdge().size(); k++){
+                    ListIdEdge.add(listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
                 }
-                if (listGraph.get(i).getListNode().get(j) != null) {
-                    System.out.println("masuk node " + j);
-                    objNode.put("id", listGraph.get(i).getListNode().get(j).getId());
-                    objNode.put("label", listGraph.get(i).getListNode().get(j).getLabel());
-                    objNode.putAll(listGraph.get(i).getListNode().get(j).getProperties());
-                    if (listGraph.get(i).getListNode().get(j).getListEdge().size() > 0) {
-                        for (int l = 0; l < listGraph.get(i).getListNode().get(j).getListEdge().size(); l++) {
-                            objListEdge.put("edge", listGraph.get(i).getListNode().get(j).getListEdge().get(l).getLabel());
-                        }
-                    }
-                    ListEdge.add(objListEdge);
-                    if (listGraph.get(i).getListNode().get(j).getListEdge().size() > 0) {
-                        for (int k = 0; k < listGraph.get(i).getListNode().get(j).getListEdge().size(); k++) {
-                            if (k % 50 == 0) {
-                                fileEdgeKe++;
-                            }
-                            if (listGraph.get(i).getListNode().get(j).getListEdge().get(k) != null) {
-                                objEdge.put("id", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
-                                objEdge.put("label", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
-                                objEdge.putAll(listGraph.get(i).getListNode().get(j).getListEdge().get(k).getProperties());
-                                objEdge.put("neighbour", listGraph.get(i).getListNode().get(j).getListEdge().get(k).getNeighbour());
-                            }
-                            objNode.put("List Edge", ListEdge);
-                            FileWriter edge = new FileWriter(LIST_NODE_FILE_NAME + fileEdgeKe);
-                            edge.write(objEdge.toJSONString());
-                            edge.flush();
-                            edge.close();
-                        }
-                    }
-                }
-                objGraph.put("List Node", ListNode);
-                FileWriter node = new FileWriter(LIST_NODE_FILE_NAME + fileNodeKe);
-                node.write(objNode.toJSONString());
-                node.flush();
-                node.close();
-            }
-            FileWriter graph = new FileWriter(LIST_GRAPH_ID_FILE_NAME + fileGraphKe);
-            graph.write(objGraph.toJSONString());
-            graph.flush();
-            graph.close();
 
-            FileReader fr = new FileReader(LIST_GRAPH_ID_FILE_NAME + fileGraphKe);
-            char[] a = new char[50];
-            fr.read(a); // reads the content to the array
-            for (char c : a) {
-                System.out.print(c); //prints the characters one by one
             }
-            fr.close();
+            objIdEdge.put("listId", listIdEdge);
+            FileWriter node = new FileWriter(LIST_EDGE_ID_FILE_NAME);
+            node.write(objIdEdge.toJSONString());
+            node.flush();
+            node.close();
+            
+            objGraph.put("node", ListNode);
+            node = new FileWriter(LIST_NODE_FILE_NAME + fileNodeKe);
+            node.write(objGraph.toJSONString());
+            node.flush();
+            node.close();
         }
+        objIdNode.put("listId", ListIdNode);
+        FileWriter node = new FileWriter(LIST_NODE_ID_FILE_NAME);
+        node.write(objIdNode.toJSONString());
+        node.flush();
+        node.close();
 
+        objIdGraph.put("listId", ListIdGraph);
+        node = new FileWriter(LIST_GRAPH_ID_FILE_NAME);
+        node.write(objIdGraph.toJSONString());
+        node.flush();
+        node.close();
     }
 
     /**
@@ -254,6 +255,17 @@ public class GraphDatabase {
      */
     public Node findNodeById(long id) {
         Node result = null;
+//        if (listGraph.size() != 0) {
+//            for (Graph listGraph : listGraph) {
+//                for (int i = 0; i < listGraph.getListNode().size(); i++) {
+//                    if (listGraph.getListNode().get(i).getId() == id) {
+//                        result = listGraph.getListNode().get(i);
+//                    }
+//                }
+//            }if (result.equals(null)) {
+//                
+//            }
+//        }
         return result;
     }
 
