@@ -156,15 +156,17 @@ public class GraphDatabase {
      * ascending
      */
     public void commit() throws IOException {
-        int fileEdgeKe = 0;
-        int fileNodeKe = 0;
-        int fileGraphKe = 0;
-        JSONObject objGraph = new JSONObject();
-        JSONArray ListNode = new JSONArray();
-        JSONObject objListNode = new JSONObject();
+        
+        JSONObject objNodes;
+        JSONArray ListNode;
+        JSONObject objNode;
+        
+        JSONObject objEdges;
+        JSONArray ListEdge;
+        JSONObject objEdge;
 
-        JSONArray ListProperty = new JSONArray();
-        JSONObject objProperty = new JSONObject();
+        JSONArray ListProperty;
+        JSONObject objProperty;
 
         JSONArray ListIdGraph = new JSONArray();
         JSONObject objIdGraph = new JSONObject();
@@ -175,16 +177,22 @@ public class GraphDatabase {
         JSONArray ListIdEdge = new JSONArray();
         JSONObject objIdEdge = new JSONObject();
 
+        // define json format dari isi graph
         for (int i = 0; i < listGraph.size(); i++) {
-            ListIdGraph.add(listGraph.get(i).getId());
-            if (i % 50 == 0) {
-                fileGraphKe++;
-            }
-
+            // define json format dari isi node
+            objNodes = new JSONObject();
+            objEdges = new JSONObject();
+            ListNode = new JSONArray();
+            ListEdge = new JSONArray();
+            
             for (int j = 0; j < listGraph.get(i).getListNode().size(); j++) {
-
-                ListIdNode.add(listGraph.get(i).getListNode().get(j).getId());
-
+                ListProperty = new JSONArray();
+                
+                // TODO : tolong define json list propertynya jangan manual gini, soalnya klo kyk gini
+                // ntar define propertynya jadi gak fleksibel. mentok cuman boleh ada judul, artikel, tanggal. bagaimana
+                // klo besok2 sy mau nambah property lagi? kan harus ngerubah code lagi.
+                // jadi solusinya ganti dengan dengan menelusuri map nya. cek, key yang ada apa aja. define sesuai yang ada aja.
+                // pelajari cara menelusuri map/hashmap di java. cara kerjanya mirip menelusuri List biasa
                 objProperty = new JSONObject();
                 objProperty.put("key", "judul");
                 objProperty.put("value", listGraph.get(i).getListNode().get(j).getProperties().get("judul").getValue());
@@ -202,40 +210,85 @@ public class GraphDatabase {
                 objProperty.put("value", listGraph.get(i).getListNode().get(j).getProperties().get("tanggal").getValue());
                 objProperty.put("dataType", listGraph.get(i).getListNode().get(j).getProperties().get("tanggal").getDataType());
                 ListProperty.add(objProperty);
-//                }
-                objListNode.put("properties", ListProperty);
-                objListNode.put("Label", listGraph.get(i).getListNode().get(j).getLabel());
-                objListNode.put("Id", listGraph.get(i).getListNode().get(j).getId());
-                ListNode.add(objListNode);
-                
-                for (int k = 0; k < listGraph.get(i).getListNode().get(j).getListEdge().size(); k++){
-                    ListIdEdge.add(listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
-                }
 
+                objNode = new JSONObject();
+                objNode.put("properties", ListProperty);
+                objNode.put("Label", listGraph.get(i).getListNode().get(j).getLabel());
+                objNode.put("Id", listGraph.get(i).getListNode().get(j).getId());
+                ListNode.add(objNode);
+                
+                 // define json format dari isi edge
+                for (int k = 0; k < listGraph.get(i).getListNode().get(j).getListEdge().size(); k++){
+                    
+                    // TODO : setelah ngebenerin define json listproperty buat node.
+                    // tolong buat juga buat define json listpoperty yang ada di edge
+                    // define codenya setelah comment ini aja
+                    
+                    objEdge = new JSONObject();
+                    objEdge.put("id",listGraph.get(i).getListNode().get(j).getListEdge().get(k).getId());
+                    objEdge.put("idSourceNode",listGraph.get(i).getListNode().get(j).getId());
+                    objEdge.put("idDestinationNode",listGraph.get(i).getListNode().get(j).getListEdge().get(k).getNeighbour().getId());
+                    
+                    ListEdge.add(objEdge);
+                }
             }
-            objIdEdge.put("listId", listIdEdge);
+            
+            // tulis json node yang telah didefinisikan ke dalam file
+            objNodes.put("node", ListNode);
+            FileWriter node = new FileWriter(LIST_NODE_FILE_NAME + listGraph.get(i).getId());
+            node.write(objNodes.toJSONString());
+            node.flush();
+            node.close();
+            
+            // tulis json edge yang telah didefinisikan ke dalam file
+            objEdges.put("edge", ListEdge);
+            FileWriter edge = new FileWriter(LIST_EDGE_FILE_NAME + listGraph.get(i).getId());
+            edge.write(objNodes.toJSONString());
+            edge.flush();
+            edge.close();
+        }
+        
+        if(listIdGraph != null) {
+            // define json format dari data yang nampung list id graph
+            for(int i = 0; i < listIdGraph.size(); i++) {
+                ListIdGraph.add(listGraph.get(i));
+            }
+            
+            // tulis json list id graph yang sudah didefinisikan
+            objIdGraph.put("listId", ListIdGraph);
+            FileWriter node = new FileWriter(LIST_GRAPH_ID_FILE_NAME);
+            node.write(objIdGraph.toJSONString());
+            node.flush();
+            node.close();
+        }
+        
+        if(listIdNode != null) {
+            // define json format dari data yang nampung list id node
+            for(int i = 0; i < listIdNode.size(); i++) {
+                ListIdNode.add(listIdNode.get(i));
+            }
+            
+            // tulis json list id node yang sudah didefinisikan
+            objIdNode.put("listId", ListIdNode);
+            FileWriter node = new FileWriter(LIST_NODE_ID_FILE_NAME);
+            node.write(objIdNode.toJSONString());
+            node.flush();
+            node.close();
+        }
+        
+        if(listIdEdge != null) {
+            // define json format dari data yang nampung list id edge
+            for(int i = 0; i < listIdEdge.size(); i++) {
+                ListIdEdge.add(listIdEdge.get(i));
+            }
+            
+            // tulis json list id edge yang sudah didefinisikan
+            objIdEdge.put("listId", ListIdEdge);
             FileWriter node = new FileWriter(LIST_EDGE_ID_FILE_NAME);
             node.write(objIdEdge.toJSONString());
             node.flush();
             node.close();
-            
-            objGraph.put("node", ListNode);
-            node = new FileWriter(LIST_NODE_FILE_NAME + fileNodeKe);
-            node.write(objGraph.toJSONString());
-            node.flush();
-            node.close();
         }
-        objIdNode.put("listId", ListIdNode);
-        FileWriter node = new FileWriter(LIST_NODE_ID_FILE_NAME);
-        node.write(objIdNode.toJSONString());
-        node.flush();
-        node.close();
-
-        objIdGraph.put("listId", ListIdGraph);
-        node = new FileWriter(LIST_GRAPH_ID_FILE_NAME);
-        node.write(objIdGraph.toJSONString());
-        node.flush();
-        node.close();
     }
 
     /**
@@ -372,6 +425,7 @@ public class GraphDatabase {
                 count++;
             }
             id = count;
+            listIdEdge.add(id);
         } else if (type == Node.class) {
             if (listIdNode == null) {
                 listIdNode = new ArrayList<Long>();
@@ -398,6 +452,7 @@ public class GraphDatabase {
                 count++;
             }
             id = count;
+            listIdNode.add(id);
         } else if (type == Graph.class) {
             if (listIdGraph == null) {
 
@@ -425,6 +480,7 @@ public class GraphDatabase {
                 count++;
             }
             id = count;
+            listIdGraph.add(id);
         } else {
             throw new NoSuchElementException("salah pemilihan type yang akan di generate id-nya");
         }
